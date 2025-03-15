@@ -28,7 +28,7 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot.loader.efi.efiSysMountPoint = "/boot";
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -135,8 +135,34 @@
 	python311
      	direnv
 	nix-direnv
+	discord
+	zoom-us
+	gimp
+	fish
+	gcc
+        tree
+	cxxtest
+        vscode
+        valgrind
+	vscode-extensions.ms-vscode.cpptools
+        typst
+        evince
+        zathura
+        texliveTeTeX
+	
+    	spotify
+   	#matlab
+
+	# Bluetooth
+	bluez-alsa
      ];
+
      programs.bash.enable = true;
+     programs.git = {
+	enable = true; 
+	userName = "bossersimon";
+	userEmail = "simon.bosser@gmail.com";
+     };
      
      # The state version is required and should stay at the version you originally installed
      home.stateVersion = "24.11";
@@ -151,28 +177,7 @@
     wget
     neovim
     firefox
-    green-pdfviewer
-    discord
-    spotify
-    zoom-us
-    gimp
     git
-    gcc
-    tree
-    fish
-    cxxtest
-    vscode
-    valgrind
-    vscode-extensions.ms-vscode.cpptools
-    typst
-    evince
-    zathura
-    texliveTeTeX
-
-    #matlab
-
-    # Bluetooth
-    bluez-alsa
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
