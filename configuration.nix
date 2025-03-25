@@ -28,7 +28,7 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot";
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -131,11 +131,12 @@
   };
 
   home-manager.users.simon = { pkgs, ... }: {
+
+     nixpkgs.config.allowUnfree = true;
+    
      home.packages = with pkgs; [
-	python311
-     	direnv
-	nix-direnv
-	discord
+        python311
+     	discord
 	zoom-us
 	gimp
 	fish
@@ -149,9 +150,10 @@
         evince
         zathura
         texliveTeTeX
-	
-    	spotify
-   	#matlab
+	spotify
+   	  #matlab
+
+        wineWowPackages.stable
 
 	# Bluetooth
 	bluez-alsa
@@ -177,8 +179,15 @@
     wget
     neovim
     firefox
-    git
+    git	
+    direnv
+    nix-direnv
   ];
+
+  # Direnv
+  programs.direnv.enable = true;
+#  programs.bash.interactiveShellInit = ''eval "$(direnv hook bash)"'';
+
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
