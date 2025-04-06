@@ -203,7 +203,7 @@
   # There have been amdgpu issues in 6.10 so you maybe need to revert on the default lts kernel.
   # boot.kernelPackages = pkgs.linuxPackages;
   programs.steam = {
-    enable = true;
+    enable = false;
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
   };
