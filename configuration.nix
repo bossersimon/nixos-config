@@ -132,38 +132,37 @@
 
   home-manager.users.simon = { pkgs, ... }: {
 
-     nixpkgs.config.allowUnfree = true;
+    nixpkgs.config.allowUnfree = true;
     
-     home.packages = with pkgs; [
-        python311
+    home.packages = with pkgs; [
+      python311
      	discord
-	zoom-us
-	gimp
-	fish
-	gcc
-        tree
-	cxxtest
-        vscode
-        valgrind
-	vscode-extensions.ms-vscode.cpptools
-        typst
-        evince
-        zathura
-        texliveTeTeX
-	spotify
+	    zoom-us
+	    gimp
+	    fish
+	    gcc
+      tree
+	    cxxtest
+      vscode
+      valgrind
+	    vscode-extensions.ms-vscode.cpptools
+      typst
+      zathura
+      texliveTeTeX
+	    spotify
    	  #matlab
 
-        wineWowPackages.stable
+      wineWowPackages.full
 
-	# Bluetooth
-	bluez-alsa
+	    # Bluetooth
+  	  bluez-alsa
      ];
 
      programs.bash.enable = true;
      programs.git = {
-	enable = true; 
-	userName = "bossersimon";
-	userEmail = "simon.bosser@gmail.com";
+	    enable = true; 
+	    userName = "bossersimon";
+	    userEmail = "simon.bosser@gmail.com";
      };
      
      # The state version is required and should stay at the version you originally installed
@@ -182,6 +181,7 @@
     git	
     direnv
     nix-direnv
+    evince
   ];
 
   # Direnv
