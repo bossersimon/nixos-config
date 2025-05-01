@@ -135,27 +135,27 @@
     nixpkgs.config.allowUnfree = true;
     
     home.packages = with pkgs; [
-      python311
-     	discord
-	    zoom-us
-	    gimp
-	    fish
-	    gcc
-      tree
-	    cxxtest
-      vscode
-      valgrind
-	    vscode-extensions.ms-vscode.cpptools
-      typst
-      zathura
-      texliveTeTeX
-	    spotify
+    	python311
+	discord
+	zoom-us
+	gimp
+	fish
+	gcc
+	tree
+	cxxtest
+
+	vscode
+	valgrind
+	vscode-extensions.ms-vscode.cpptools
+	typst
+	zathura
+	texliveTeTeX
+	spotify
    	  #matlab
+	wineWowPackages.full
 
-      wineWowPackages.full
-
-	    # Bluetooth
-  	  bluez-alsa
+	# Bluetooth
+	bluez-alsa
      ];
 
      programs.bash.enable = true;
@@ -177,6 +177,8 @@
   environment.systemPackages = with pkgs; [
     wget
     neovim
+    vim
+    ripgrep
     firefox
     git	
     direnv
