@@ -28,7 +28,7 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot";
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -132,7 +132,7 @@
 
   home-manager.users.simon = { pkgs, ... }: {
 
-    nixpkgs.config.allowUnfree = true;
+    #nixpkgs.config.allowUnfree = true;
     
     home.packages = with pkgs; [
     	python311
@@ -158,7 +158,28 @@
 	bluez-alsa
      ];
 
-     programs.bash.enable = true;
+     nixpkgs.config.allowUnfreePredicate = 
+        pkg: builtins.elem (pkgs.lib.getName pkg) [
+            "discord" 
+            "zoom"
+            "vscode"
+            "vscode-extension-ms-vscode-cpptools"
+            "spotify"
+        ];
+
+     programs.bash = {
+        enable = true;
+        #shellAliases = { ".." =  "cd .."};
+        initExtra = ''
+            parse_git_branch() {
+               # git branch 2>/dev/null | grep '^*' | sed 's/^* //'
+                git rev-parse --abbrev-ref HEAD 2>/dev/null | sed 's/.*/ (\0)/'
+            }
+
+            export PS1="\u@\h \[\e[32m\]\w\[\e[33m\]\$(parse_git_branch)\[\e[0m\] \$ "
+        '';
+     };
+
      programs.git = {
 	    enable = true; 
 	    userName = "bossersimon";
