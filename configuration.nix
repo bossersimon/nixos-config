@@ -11,8 +11,39 @@
       <home-manager/nixos>
     ];
 
+
+   nixpkgs.config.nvidia.acceptLicense = true;
+
+   services.xserver.videoDrivers = [ "nvidia" ];
+   hardware.nvidia = {
+     modesetting.enable = true; # Enables modesetting
+     open = false; # Use closed-source NVIDIA driver (correct for your hardware)
+     package = config.boot.kernelPackages.nvidiaPackages.stable; # Make sure you are using the correct package
+     nvidiaSettings = true; # This will install `nvidia-settings` for configuring the GPU
+   };
+   
+   environment.sessionVariables = {
+     VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/nvidia_icd.x86_64.json";
+     VK_LAYER_PATH = "/run/opengl-driver/share/vulkan/implicit_layer.d";
+     STEAM_FORCE_DESKTOPUI_SCALING = "1";
+     SDL_VIDEO_DRIVER = "x11";
+   };
+
+   hardware.graphics = {
+     enable = true;
+     enable32Bit = true;
+
+     extraPackages = with pkgs; [
+	nvidia-vaapi-driver
+     ];
+     extraPackages32 = with pkgs.pkgsi686Linux; [
+        libva
+     ];
+   };
+
+
    # Flatpak
-   services.flatpak.enable = true;
+   #services.flatpak.enable = true;
    xdg.portal.extraPortals = [];
    xdg.portal.config.common.default = "gtk";
 
@@ -28,7 +59,7 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot.loader.efi.efiSysMountPoint = "/boot";
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -156,6 +187,12 @@
 
 	# Bluetooth
 	bluez-alsa
+
+	# steam DX11 translation layer
+	dxvk
+
+	vulkan-tools
+	glxinfo
      ];
 
      nixpkgs.config.allowUnfreePredicate = 
@@ -222,14 +259,20 @@
   #   enableSSHSupport = true;
   # };
 
+	
+
+
 
   # There have been amdgpu issues in 6.10 so you maybe need to revert on the default lts kernel.
   # boot.kernelPackages = pkgs.linuxPackages;
   programs.steam = {
-    enable = false;
+    enable = true;
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    gamescopeSession.enable = true;
   };
+
+
 
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
     "steam"
