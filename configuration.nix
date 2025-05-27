@@ -4,11 +4,16 @@
 
 { config, pkgs, lib, ... }:
 
-{
-  imports =
-    [ # Include the results of the hardware scan.
+  let 
+    home-manager = builtins.fetchTarball {
+      url = "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";	
+      sha256 = "06kpj2mgfd3b0sip93k12ls00vn48ghxn3xg8705cfyn321m380r";
+    };
+
+  in {
+    imports = [ # Include the results of the hardware scan.
       /etc/nixos/hardware-configuration.nix
-      <home-manager/nixos>
+      (import "${home-manager}/nixos")
     ];
 
 
@@ -75,7 +80,7 @@
   time.timeZone = "Europe/Stockholm";
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.utf8";
+  i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "sv_SE.utf8";
@@ -109,8 +114,8 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-   hardware.pulseaudio.enable = true;
-   hardware.pulseaudio.support32Bit = true;    ## If compatibility with 32-bit applications is desired.
+  services.pulseaudio.enable = true;
+  services.pulseaudio.support32Bit = true;    ## If compatibility with 32-bit applications is desired.
 
    
 #  security.rtkit.enable = true;
