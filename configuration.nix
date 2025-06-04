@@ -11,6 +11,9 @@
       <home-manager/nixos>
     ];
 
+
+   hardware.spacenavd.enable = true;
+
    # Flatpak
    services.flatpak.enable = true;
    xdg.portal.extraPortals = [];
@@ -44,7 +47,7 @@
   time.timeZone = "Europe/Stockholm";
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.utf8";
+  i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "sv_SE.utf8";
@@ -78,8 +81,8 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-   hardware.pulseaudio.enable = true;
-   hardware.pulseaudio.support32Bit = true;    ## If compatibility with 32-bit applications is desired.
+   services.pulseaudio.enable = true;
+   services.pulseaudio.support32Bit = true;    ## If compatibility with 32-bit applications is desired.
 
    
 #  security.rtkit.enable = true;
@@ -156,7 +159,8 @@
 
 	# Bluetooth
 	bluez-alsa
-     ];
+    inkscape
+  ];
 
      nixpkgs.config.allowUnfreePredicate = 
         pkg: builtins.elem (pkgs.lib.getName pkg) [
