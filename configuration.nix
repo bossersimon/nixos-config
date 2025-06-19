@@ -11,6 +11,7 @@
       <home-manager/nixos>
     ];
 
+   boot.kernelParams = [ "usbcore.autosuspend=-1" ];
 
    hardware.spacenavd.enable = true;
 
@@ -102,6 +103,10 @@
   #bluetooth
 
   hardware.enableAllFirmware = true;
+  hardware.firmware = [ pkgs.rtl8761b-firmware ]; # Bluetooth adapter support
+
+# try later
+  #hardware.enableRedistributableFirmware = true;
 
   hardware.bluetooth = {
     enable = true;
@@ -209,6 +214,7 @@
     direnv
     nix-direnv
     evince
+    busybox
   ];
 
   # Direnv
