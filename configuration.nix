@@ -10,8 +10,12 @@
       /etc/nixos/hardware-configuration.nix
       <home-manager/nixos>
     ];
+    
+    # For GPU
+   boot.kernelParams = [ "usbcore.autosuspend=-1" "i915.enable_guc=3" ];
 
-   boot.kernelParams = [ "usbcore.autosuspend=-1" ];
+   # Here I tried to fix SD card reading issues
+   boot.kernelModules = [ "mmc_block" "mmc_core" "sdhci" "sdhci_pci" "rtsx_pci" ];
 
    hardware.spacenavd.enable = true;
 
@@ -30,9 +34,21 @@
    #virtualisation.virtualbox.guest.enable = true;
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot.loader.systemd-boot.enable = false;
+
+  boot.loader = {
+    efi = {
+      canTouchEfiVariables = true;
+      efiSysMountPoint = "/boot/efi"; 
+    };
+    grub = {
+     enable=true;
+     efiSupport = true;
+     #efiInstallAsRemovable = true; # in case canTouchEfiVariables doesn't work for your system
+     device = "nodev";
+     useOSProber = true;
+    };
+  };
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -105,18 +121,16 @@
   hardware.enableAllFirmware = true;
   hardware.firmware = [ pkgs.rtl8761b-firmware ]; # Bluetooth adapter support
 
-# try later
-  #hardware.enableRedistributableFirmware = true;
-
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
     package = pkgs.bluez5-experimental;
     settings = {
       Policy.AutoEnable = "true";
-#      General = {
-#        Experimental = true;
-#      };
+      General = {
+        Experimental = true;
+        Enable = "Source,Sink,Media,Socket"; # Extra bluetooth profiles
+      };
 #      LE = {
 #      	ScanIntervalDiscovery = 48;
 #        ScanWindowDiscovery = 48;
@@ -191,8 +205,8 @@
 
      programs.git = {
 	    enable = true; 
-	    userName = "bossersimon";
-	    userEmail = "simon.bosser@gmail.com";
+	    settings.user.name = "bossersimon";
+	    settings.user.email = "simon.bosser@gmail.com";
      };
      
      # The state version is required and should stay at the version you originally installed
@@ -215,6 +229,9 @@
     nix-direnv
     evince
     busybox
+
+    linux-firmware
+    qimgv
   ];
 
   # Direnv
@@ -236,9 +253,10 @@
   # There have been amdgpu issues in 6.10 so you maybe need to revert on the default lts kernel.
   # boot.kernelPackages = pkgs.linuxPackages;
   programs.steam = {
-    enable = false;
+    enable = true;
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
 
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -247,6 +265,36 @@
     "steam-original"
     "steam-run"
   ];
+
+
+  ### Graphics support, Vulcan
+  services.xserver.videoDrivers = [ "modesetting" ];
+
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      # Required for modern Intel GPUs (Xe iGPU and ARC)
+      intel-media-driver     # VA-API (iHD) userspace
+      vpl-gpu-rt             # oneVPL (QSV) runtime
+
+      # Optional (compute / tooling):
+      intel-compute-runtime  # OpenCL (NEO) + Level Zero for Arc/Xe
+      # NOTE: 'intel-ocl' also exists as a legacy package; not recommended for Arc/Xe.
+      # libvdpau-va-gl       # Only if you must run VDPAU-only apps
+    ];
+  };
+
+  environment.sessionVariables = {
+    LIBVA_DRIVER_NAME = "iHD";     # Prefer the modern iHD backend
+    # VDPAU_DRIVER = "va_gl";      # Only if using libvdpau-va-gl
+  };
+
+  # May help if FFmpeg/VAAPI/QSV init fails (esp. on Arc with i915):
+  hardware.enableRedistributableFirmware = true;
+
+  # May help services that have trouble accessing /dev/dri (e.g., jellyfin/plex):
+  # users.users.<service>.extraGroups = [ "video" "render" ];
+
 
   # List services that you want to enable:
   environment.enableDebugInfo = true;
