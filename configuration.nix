@@ -203,6 +203,12 @@
 
 	vulkan-tools
 	mesa-demos
+
+
+	# ST
+	openocd # debugger/programmers
+	stlink 
+	gcc-arm-embedded # toolchaim
      ];
 
      nixpkgs.config.allowUnfreePredicate = 
