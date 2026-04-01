@@ -6,8 +6,8 @@
 
   let 
     home-manager = builtins.fetchTarball {
-      url = "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";	
-      sha256 = "06kpj2mgfd3b0sip93k12ls00vn48ghxn3xg8705cfyn321m380r";
+      url = "https://github.com/nix-community/home-manager/archive/release-25.11.tar.gz";
+      sha256 = "07pk5m6mxi666dclaxdwf7xrinifv01vvgxn49bjr8rsbh31syaq";
     };
 
   in {
@@ -22,6 +22,7 @@
    services.xserver.videoDrivers = [ "nvidia" ];
    hardware.nvidia = {
      modesetting.enable = true; # Enables modesetting
+     powerManagement.enable = true;
      open = false; # Use closed-source NVIDIA driver (correct for your hardware)
      package = config.boot.kernelPackages.nvidiaPackages.stable; # Make sure you are using the correct package
      nvidiaSettings = true; # This will install `nvidia-settings` for configuring the GPU
@@ -32,8 +33,12 @@
      VK_LAYER_PATH = "/run/opengl-driver/share/vulkan/implicit_layer.d";
      STEAM_FORCE_DESKTOPUI_SCALING = "1";
      SDL_VIDEO_DRIVER = "x11";
-   };
 
+     LIBVA_DRIVER_NAME = "nvidia";
+     GBM_BACKEND = "nvidia-drm";
+     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+   };
+   
    hardware.graphics = {
      enable = true;
      enable32Bit = true;
@@ -97,10 +102,10 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Enable the Cinnamon Desktop Environment.
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.desktopManager.cinnamon.enable = true;
-
+  # Enable the Plasma Desktop Environment.
+  services.displayManager.sddm.enable = true;
+  services.desktopManager.plasma6.enable = true;
+  services.xserver.displayManager.defaultSession = "plasma";
   # Configure keymap in X11
   services.xserver = {
     xkb.layout = "se";
@@ -197,7 +202,7 @@
 	dxvk
 
 	vulkan-tools
-	glxinfo
+	mesa-demos
      ];
 
      nixpkgs.config.allowUnfreePredicate = 
