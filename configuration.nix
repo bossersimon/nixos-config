@@ -232,6 +232,8 @@
 
     linux-firmware
     qimgv
+    bambu-studio
+    prusa-slicer
   ];
 
   # Direnv
