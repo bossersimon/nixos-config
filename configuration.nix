@@ -98,13 +98,14 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-   services.pulseaudio.enable = true;
-   services.pulseaudio.support32Bit = true;    ## If compatibility with 32-bit applications is desired.
+   services.pulseaudio.enable = false;
+   #services.pulseaudio.support32Bit = true;    ## If compatibility with 32-bit applications is desired.
 
    
-#  security.rtkit.enable = true;
+  security.rtkit.enable = true;
+
   services.pipewire = {
-    enable = false;
+    enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
@@ -112,35 +113,37 @@
     #jack.enable = true;
   };
 
-
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
   
   #bluetooth
 
   hardware.enableAllFirmware = true;
-  hardware.firmware = [ pkgs.rtl8761b-firmware ]; # Bluetooth adapter support
+  #hardware.firmware = [ pkgs.rtl8761b-firmware ]; # Bluetooth adapter support
 
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
-    package = pkgs.bluez5-experimental;
+    package = pkgs.bluez;
+/*
+ package = pkgs.bluez5-experimental;
     settings = {
       Policy.AutoEnable = "true";
       General = {
         Experimental = true;
         Enable = "Source,Sink,Media,Socket"; # Extra bluetooth profiles
-      };
+      };*/
+
 #      LE = {
 #      	ScanIntervalDiscovery = 48;
 #        ScanWindowDiscovery = 48;
 #     	CentralAddressResolution = 1;
 #     	EnableAdvMonInterleaveScan = 1;
 #      };
-    };
+#    };
   };
 
-  services.blueman.enable = true; 
+#  services.blueman.enable = true; 
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.simon = {
@@ -179,6 +182,12 @@
 	# Bluetooth
 	bluez-alsa
     inkscape
+
+    # ST
+    openocd # debugger/programmers
+	stlink 
+	gcc-arm-embedded # toolchaim
+    stm32cubemx
   ];
 
      nixpkgs.config.allowUnfreePredicate = 
@@ -188,6 +197,7 @@
             "vscode"
             "vscode-extension-ms-vscode-cpptools"
             "spotify"
+            "stm32cubemx"
         ];
 
      programs.bash = {
