@@ -39,7 +39,7 @@
   boot.loader = {
     efi = {
       canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot/efi"; 
+      efiSysMountPoint = "/boot"; 
     };
     grub = {
      enable=true;
@@ -214,9 +214,9 @@
      };
 
      programs.git = {
-	    enable = true; 
-	    settings.user.name = "bossersimon";
-	    settings.user.email = "simon.bosser@gmail.com";
+	enable = true; 
+	userEmail = "simon.bosser@gmail.com";
+	userName = "bossersimon";
      };
      
      # The state version is required and should stay at the version you originally installed
