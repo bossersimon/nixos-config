@@ -121,26 +121,12 @@
   hardware.enableAllFirmware = true;
   #hardware.firmware = [ pkgs.rtl8761b-firmware ]; # Bluetooth adapter support
 
+  zramSwap.enable = true;
+
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
     package = pkgs.bluez;
-/*
- package = pkgs.bluez5-experimental;
-    settings = {
-      Policy.AutoEnable = "true";
-      General = {
-        Experimental = true;
-        Enable = "Source,Sink,Media,Socket"; # Extra bluetooth profiles
-      };*/
-
-#      LE = {
-#      	ScanIntervalDiscovery = 48;
-#        ScanWindowDiscovery = 48;
-#     	CentralAddressResolution = 1;
-#     	EnableAdvMonInterleaveScan = 1;
-#      };
-#    };
   };
 
 #  services.blueman.enable = true; 
@@ -157,8 +143,6 @@
 
   home-manager.users.simon = { pkgs, ... }: {
 
-    #nixpkgs.config.allowUnfree = true;
-    
     home.packages = with pkgs; [
     	python311
 	discord
@@ -188,6 +172,7 @@
 	stlink 
 	gcc-arm-embedded # toolchaim
     stm32cubemx
+    qemu
   ];
 
      nixpkgs.config.allowUnfreePredicate = 
@@ -244,6 +229,9 @@
     qimgv
     bambu-studio
     prusa-slicer
+    mesa-demos
+    htop
+    neofetch
   ];
 
   # Direnv
